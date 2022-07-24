@@ -54,7 +54,6 @@ export const Table: React.FC = () => {
     // setToDos(toDos.splice(editedNumber, 0, formState));
     const json: string = JSON.stringify(newToDos, undefined, 1);
     localStorage.setItem('key', json);
-    setIsEdited(!isEdited);
     setFormState(initialFormState);
     setEditedNumber(initialEditedNumber);
     setIsEdited(false);
