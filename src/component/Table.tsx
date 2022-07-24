@@ -1,80 +1,36 @@
-import React, { useState, useEffect } from 'react';
+import { useEffect } from 'react';
+import { useToDos } from '@/hook/useToDos';
 
-interface ToDoProps {
+export interface ToDoProps {
   isCompleted: boolean;
   name: string;
   description: string;
 }
 
 export const Table: React.FC = () => {
+  const {
+    formState,
+    toDos,
+    setToDos,
+    isEdited,
+    newClick,
+    editedClick,
+    deleteClick,
+    updateClick,
+    handleInput,
+    handleCheck,
+  } = useToDos();
+
   useEffect(() => {
+    const fetchToDos = (): ToDoProps[] => {
+      const data = localStorage.getItem('todo');
+      if (data) return JSON.parse(data);
+      return [];
+    };
     setToDos(fetchToDos());
-  }, []);
-
-  const fetchToDos = (): ToDoProps[] => {
-    const data = localStorage.getItem('todo');
-    if (data) return JSON.parse(data);
-    return [];
-  };
-
-  // const [nameForm, setNameForm] = useState<string>('');
-  // const [descriptionForm, setDescriptionForm] = useState<string>('');
-  const initialFormState: ToDoProps = {
-    isCompleted: false,
-    name: '',
-    description: '',
-  };
-  const initialEditedNumber = -1;
-  const [formState, setFormState] = useState<ToDoProps>(initialFormState);
-  const [toDos, setToDos] = useState<ToDoProps[]>([]);
-  const [isEdited, setIsEdited] = useState<boolean>(false);
-  const [editedNumber, setEditedNumber] = useState<number>(initialEditedNumber);
-  const newClick = () => {
-    if (!formState.name || !formState.description) return;
-    const newToDos: ToDoProps[] = [...toDos, { ...formState, isCompleted: false }];
-    setToDos(newToDos);
-    localStorage.setItem('todo', JSON.stringify(newToDos));
-    setFormState(initialFormState);
-  };
-  const editedClick = (toDo: ToDoProps, i: number) => {
-    setIsEdited(true);
-    setEditedNumber(i);
-    setFormState(toDo);
-  };
-  const deleteClick = (i: number) => {
-    if (!confirm('本当に削除しますか？')) return;
-    const newToDos: ToDoProps[] = [...toDos];
-    newToDos.splice(i, 1);
-    setToDos(newToDos);
-    localStorage.setItem('todo', JSON.stringify(newToDos));
-  };
-  const updateClick = () => {
-    if (!formState.name || !formState.description) return;
-    const newToDos: ToDoProps[] = [...toDos];
-    // 更新するときにはかならずnewToDosにする必要あり！
-    newToDos[editedNumber] = formState;
-    setToDos(newToDos);
-    // setToDos(toDos.splice(editedNumber, 0, formState));
-    localStorage.setItem('todo', JSON.stringify(newToDos));
-    setFormState(initialFormState);
-    setEditedNumber(initialEditedNumber);
-    setIsEdited(false);
-  };
-  // const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   setNameForm(e.target.value);
-  // };
-  // const handleDescriptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   setDescriptionForm(e.target.value);
-  // };
-  const handleInput = (key: string, value: string): void => {
-    setFormState({ ...formState, [key]: value });
-  };
-  const handleCheck = (checked: boolean, i: number): void => {
-    const updatedToDos: ToDoProps[] = [...toDos];
-    updatedToDos[i] = { ...updatedToDos[i], isCompleted: checked };
-    setToDos(updatedToDos);
-    localStorage.setItem('todo', JSON.stringify(updatedToDos));
-  };
+  }, [setToDos]);
+  // 空配列だと依存関係がどうちゃらとeslintに怒られるので、fetchToDos()をuseEffectの中で定義して依存配列にsetToDosを指定すると行けるらしい。
+  // Presentation
   return (
     <div className='my-20'>
       <table className='overflow-hidden rounded-md'>
