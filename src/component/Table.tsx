@@ -24,6 +24,7 @@ export const Table: React.FC = () => {
   const [toDos, setToDos] = useState<ToDoProps[]>(initialtoDos);
   const [isEdited, setIsEdited] = useState<boolean>(false);
   const [editedNumber, setEditedNumber] = useState<number>(-1);
+  const [isDelete, setIsDelete] = useState<boolean>(false);
   const newClick = () => {
     if (!formState.name || !formState.description) return;
     setToDos([...toDos, { ...formState, isCompleted: false }]);
@@ -34,6 +35,18 @@ export const Table: React.FC = () => {
     setEditedNumber(i);
     console.log(editedNumber);
     setFormState(toDo);
+  };
+  const deleteClick = (i: number) => {
+    const isResult: boolean = confirm('本当に削除しますか？');
+    if (!isResult) return;
+    setIsDelete(!isDelete);
+    setEditedNumber(i);
+    console.log(editedNumber);
+    const newToDos: ToDoProps[] = [...toDos];
+    newToDos.splice(editedNumber, 1);
+    setToDos(newToDos);
+    setIsDelete(!isDelete);
+    setEditedNumber(-1);
   };
   const updateClick = () => {
     if (!formState.name || !formState.description) return;
@@ -87,6 +100,11 @@ export const Table: React.FC = () => {
                   onClick={() => editedClick(toDo, i)}
                 >
                   編集
+                </button>
+              </td>
+              <td>
+                <button className='bg-pink-700 px-3 py-2 text-white' onClick={() => deleteClick(i)}>
+                  削除
                 </button>
               </td>
             </tr>
