@@ -25,7 +25,7 @@ export const Table: React.FC = () => {
   const [isEdited, setIsEdited] = useState<boolean>(false);
   const [editedNumber, setEditedNumber] = useState<number>(-1);
   const newClick = () => {
-    if (!formState.name) return;
+    if (!formState.name || !formState.description) return;
     setToDos([...toDos, { ...formState, isCompleted: false }]);
     setFormState(initialFormState);
   };
@@ -36,6 +36,7 @@ export const Table: React.FC = () => {
     setFormState(toDo);
   };
   const updateClick = () => {
+    if (!formState.name || !formState.description) return;
     console.log(editedNumber);
     const newToDos: ToDoProps[] = [...toDos];
     newToDos[editedNumber] = formState;
