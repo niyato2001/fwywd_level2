@@ -106,14 +106,14 @@ export const Table: React.FC = () => {
         <input
           type='text'
           placeholder='name'
-          className='mt-5 block text-primary-700 focus:ring-white'
+          className='mt-5 block border-primary-700 text-primary-700 focus:border-primary-500 focus:ring-white'
           onChange={(e) => handleInput('name', e.target.value)}
           value={formState.name}
         />
         <input
           type='text'
           placeholder='description'
-          className='mt-5 block text-primary-700 focus:ring-white'
+          className='mt-5 block border-primary-700 text-primary-700 focus:border-primary-500 focus:ring-white'
           onChange={(e) => handleInput('description', e.target.value)}
           value={formState.description}
         />
