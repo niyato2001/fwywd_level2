@@ -39,15 +39,10 @@ export const Table: React.FC = () => {
     if (!formState.name || !formState.description) return;
     console.log(editedNumber);
     const newToDos: ToDoProps[] = [...toDos];
+    // 更新するときにはかならずnewToDosにする必要あり！
     newToDos[editedNumber] = formState;
     setToDos(newToDos);
-    // setToDos(
-    //   toDos.splice(editedNumber, 0, {
-    //     isCompleted: false,
-    //     name: nameForm,
-    //     description: descriptionForm,
-    //   }),
-    // );
+    // setToDos(toDos.splice(editedNumber, 0, formState));
     console.log(toDos);
     setIsEdited(!isEdited);
     setFormState(initialFormState);
