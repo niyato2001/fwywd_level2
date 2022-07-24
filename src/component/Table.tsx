@@ -8,9 +8,11 @@ interface ToDoProps {
 
 export const Table: React.FC = () => {
   const initialtoDos: ToDoProps[] = [
-    { isCompleted: false, name: 'タスク1', description: '寝る' },
-    { isCompleted: false, name: 'タスク2', description: '寝る' },
-    { isCompleted: false, name: 'タスク3', description: '寝る' },
+    {
+      isCompleted: false,
+      name: 'task1',
+      description: 'ねる　',
+    },
   ];
 
   // const [nameForm, setNameForm] = useState<string>('');
@@ -20,48 +22,42 @@ export const Table: React.FC = () => {
     name: '',
     description: '',
   };
+  const initialEditedNumber = -1;
   const [formState, setFormState] = useState<ToDoProps>(initialFormState);
   const [toDos, setToDos] = useState<ToDoProps[]>(initialtoDos);
   const [isEdited, setIsEdited] = useState<boolean>(false);
-  const [editedNumber, setEditedNumber] = useState<number>(-1);
-  const [isDelete, setIsDelete] = useState<boolean>(false);
+  const [editedNumber, setEditedNumber] = useState<number>(initialEditedNumber);
   const newClick = () => {
     if (!formState.name || !formState.description) return;
     setToDos([...toDos, { ...formState, isCompleted: false }]);
+
     setFormState(initialFormState);
   };
   const editedClick = (toDo: ToDoProps, i: number) => {
-    setIsEdited(!isEdited);
+    setIsEdited(true);
     setEditedNumber(i);
-    console.log(editedNumber);
     setFormState(toDo);
   };
   const deleteClick = (i: number) => {
-    const isResult: boolean = confirm('本当に削除しますか？');
-    if (!isResult) return;
-    setIsDelete(!isDelete);
-    setEditedNumber(i);
-    console.log(editedNumber);
+    if (!confirm('本当に削除しますか？')) return;
     const newToDos: ToDoProps[] = [...toDos];
-    newToDos.splice(editedNumber, 1);
+    newToDos.splice(i, 1);
+
     setToDos(newToDos);
-    setIsDelete(!isDelete);
-    setEditedNumber(-1);
   };
   const updateClick = () => {
     if (!formState.name || !formState.description) return;
-    console.log(editedNumber);
     const newToDos: ToDoProps[] = [...toDos];
     // 更新するときにはかならずnewToDosにする必要あり！
     newToDos[editedNumber] = formState;
     setToDos(newToDos);
     // setToDos(toDos.splice(editedNumber, 0, formState));
-    console.log(toDos);
+    const json: string = JSON.stringify(newToDos, undefined, 1);
+    localStorage.setItem('key', json);
     setIsEdited(!isEdited);
     setFormState(initialFormState);
-    setEditedNumber(-1);
-    console.log(editedNumber);
-    setIsEdited(!isEdited);
+    setEditedNumber(initialEditedNumber);
+    setIsEdited(false);
   };
   // const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
   //   setNameForm(e.target.value);
@@ -71,6 +67,11 @@ export const Table: React.FC = () => {
   // };
   const handleInput = (key: string, value: string): void => {
     setFormState({ ...formState, [key]: value });
+  };
+  const handleCheck = (checked: boolean, i: number): void => {
+    const updatedToDos: ToDoProps[] = [...toDos];
+    updatedToDos[i] = { ...updatedToDos[i], isCompleted: checked };
+    setToDos(updatedToDos);
   };
   return (
     <div className='my-20'>
@@ -89,7 +90,8 @@ export const Table: React.FC = () => {
                 <input
                   type='checkbox'
                   className='rounded-sm border-primary-700 text-primary-700 focus:ring-white'
-                  defaultChecked={toDo.isCompleted}
+                  checked={toDo.isCompleted}
+                  onChange={(e) => handleCheck(e.target.checked, i)}
                 />
               </td>
               <td className='px-4 py-2'>{toDo.name}</td>
