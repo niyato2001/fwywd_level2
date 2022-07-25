@@ -14,7 +14,10 @@ export interface IFormValues {
 }
 
 export const Table: React.FC = () => {
-  const { register, handleSubmit, reset } = useForm();
+  const { register, handleSubmit, setValue, reset } = useForm();
+  //   {
+  //   defaultValues: { name: '', description: '' },
+  // }
   const toDoSubmit = handleSubmit((data) => {
     !isEdited
       ? newClick(JSON.parse(JSON.stringify(data)))
@@ -38,8 +41,8 @@ export const Table: React.FC = () => {
   useEffect(() => {
     const fetchToDos = (): ToDoProps[] => {
       const data = localStorage.getItem('todo');
-      if (data) return JSON.parse(data);
-      return [];
+      if (!data) return [];
+      return JSON.parse(data);
     };
     setToDos(fetchToDos());
   }, [setToDos]);
@@ -71,7 +74,11 @@ export const Table: React.FC = () => {
               <td className='px-4 py-2'>{toDo.description}</td>
               <td>
                 <button
-                  onClick={() => editedClick(toDo, i)}
+                  onClick={() => {
+                    setValue('name', toDo.name);
+                    setValue('description', toDo.description);
+                    editedClick(toDo, i);
+                  }}
                   className='bg-primary-700 px-3 py-2 text-white'
                 >
                   編集
