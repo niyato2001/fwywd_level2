@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useLayoutEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useToDos } from '@/hook/useToDos';
 
@@ -38,7 +38,7 @@ export const Table: React.FC = () => {
     handleCheck,
   } = useToDos();
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const fetchToDos = (): ToDoProps[] => {
       const data = localStorage.getItem('todo');
       if (!data) return [];
