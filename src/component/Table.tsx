@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
 import { useToDos } from '@/hook/useToDos';
 
 export interface ToDoProps {
@@ -7,25 +8,41 @@ export interface ToDoProps {
   description: string;
 }
 
+export interface IFormValues {
+  name: string;
+  description: string;
+}
+
 export const Table: React.FC = () => {
+  const { register, handleSubmit, setValue, reset } = useForm();
+  //   {
+  //   defaultValues: { name: '', description: '' },
+  // }
+  const toDoSubmit = handleSubmit((data) => {
+    !isEdited
+      ? newClick(JSON.parse(JSON.stringify(data)))
+      : updateClick(JSON.parse(JSON.stringify(data)));
+    reset();
+  });
+
   const {
-    formState,
     toDos,
     setToDos,
     isEdited,
     newClick,
+    // formState,
     editedClick,
     deleteClick,
     updateClick,
-    handleInput,
+    // handleInput,
     handleCheck,
   } = useToDos();
 
   useEffect(() => {
     const fetchToDos = (): ToDoProps[] => {
       const data = localStorage.getItem('todo');
-      if (data) return JSON.parse(data);
-      return [];
+      if (!data) return [];
+      return JSON.parse(data);
     };
     setToDos(fetchToDos());
   }, [setToDos]);
@@ -57,14 +74,18 @@ export const Table: React.FC = () => {
               <td className='px-4 py-2'>{toDo.description}</td>
               <td>
                 <button
+                  onClick={() => {
+                    setValue('name', toDo.name);
+                    setValue('description', toDo.description);
+                    editedClick(toDo, i);
+                  }}
                   className='bg-primary-700 px-3 py-2 text-white'
-                  onClick={() => editedClick(toDo, i)}
                 >
                   編集
                 </button>
               </td>
               <td>
-                <button className='bg-pink-700 px-3 py-2 text-white' onClick={() => deleteClick(i)}>
+                <button onClick={() => deleteClick(i)} className='bg-pink-700 px-3 py-2 text-white'>
                   削除
                 </button>
               </td>
@@ -72,29 +93,36 @@ export const Table: React.FC = () => {
           ))}
         </tbody>
       </table>
-      {isEdited ? (
-        <button onClick={() => updateClick()} className='mt-5 bg-primary-700 px-3 py-2 text-white'>
-          更新
-        </button>
-      ) : (
-        <button onClick={() => newClick()} className='mt-5 bg-primary-700 px-3 py-2 text-white'>
-          新規追加
-        </button>
-      )}
-      <form>
+      <form onSubmit={toDoSubmit}>
+        {isEdited ? (
+          <button type='submit' className='mt-5 bg-primary-700 px-3 py-2 text-white'>
+            更新
+          </button>
+        ) : (
+          <button type='submit' className='mt-5 bg-primary-700 px-3 py-2 text-white'>
+            新規追加
+          </button>
+        )}
+
         <input
           type='text'
           placeholder='name'
           className='mt-5 block border-primary-700 text-primary-700 focus:border-primary-500 focus:ring-white'
-          onChange={(e) => handleInput('name', e.target.value)}
-          value={formState.name}
+          {...register('name', {
+            required: true,
+            // onChange: (e) => handleInput('name', e.target.value),
+          })}
+          // value={formState.name}
         />
         <input
           type='text'
           placeholder='description'
           className='mt-5 block border-primary-700 text-primary-700 focus:border-primary-500 focus:ring-white'
-          onChange={(e) => handleInput('description', e.target.value)}
-          value={formState.description}
+          {...register('description', {
+            required: true,
+            // onChange: (e) => handleInput('description', e.target.value),
+          })}
+          // value={formState.description}
         />
       </form>
     </div>
