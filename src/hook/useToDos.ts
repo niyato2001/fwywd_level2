@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ToDoProps } from '@/component/Table';
+import { ToDoProps, IFormValues } from '@/component/Table';
 
 export const useToDos = () => {
   // const [nameForm, setNameForm] = useState<string>('');
@@ -15,9 +15,8 @@ export const useToDos = () => {
   const [toDos, setToDos] = useState<ToDoProps[]>([]);
   const [isEdited, setIsEdited] = useState<boolean>(false);
   const [editedNumber, setEditedNumber] = useState<number>(initialEditedNumber);
-  const newClick = () => {
-    if (!formState.name || !formState.description) return;
-    const newToDos: ToDoProps[] = [...toDos, { ...formState, isCompleted: false }];
+  const newClick = (data: IFormValues) => {
+    const newToDos: ToDoProps[] = [...toDos, { ...data, isCompleted: false }];
     setToDos(newToDos);
     localStorage.setItem('todo', JSON.stringify(newToDos));
     setFormState(initialFormState);
@@ -25,6 +24,7 @@ export const useToDos = () => {
   const editedClick = (toDo: ToDoProps, i: number) => {
     setIsEdited(true);
     setEditedNumber(i);
+    console.log(toDo);
     setFormState(toDo);
   };
   const deleteClick = (i: number) => {
@@ -34,11 +34,10 @@ export const useToDos = () => {
     setToDos(newToDos);
     localStorage.setItem('todo', JSON.stringify(newToDos));
   };
-  const updateClick = () => {
-    if (!formState.name || !formState.description) return;
+  const updateClick = (data: IFormValues) => {
     const newToDos: ToDoProps[] = [...toDos];
     // 更新するときにはかならずnewToDosにする必要あり！
-    newToDos[editedNumber] = formState;
+    newToDos[editedNumber] = { ...data, isCompleted: newToDos[editedNumber].isCompleted };
     setToDos(newToDos);
     // setToDos(toDos.splice(editedNumber, 0, formState));
     localStorage.setItem('todo', JSON.stringify(newToDos));
