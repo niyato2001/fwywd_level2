@@ -1,6 +1,6 @@
 import { useLayoutEffect } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
-import { ToDoProps } from './common/part/Button';
+import { ToDoProps, Button } from './common/part/Button';
 import { Input } from './common/part/Input';
 import { useToDos } from '@/hook/useToDos';
 
@@ -69,21 +69,18 @@ export const Table: React.FC = () => {
               <td className='px-4 py-2'>{toDo.name}</td>
               <td className='px-4 py-2'>{toDo.description}</td>
               <td>
-                <button
+                <Button
                   onClick={() => {
                     methods.setValue('name', toDo.name);
                     methods.setValue('description', toDo.description);
                     editedClick(toDo, i);
                   }}
-                  className='bg-primary-700 px-3 py-2 text-white'
-                >
-                  編集
-                </button>
+                  name='編集'
+                  color={'bg-primary-700'}
+                />
               </td>
               <td>
-                <button onClick={() => deleteClick(i)} className='bg-pink-700 px-3 py-2 text-white'>
-                  削除
-                </button>
+                <Button onClick={() => deleteClick(i)} name='削除' color={'bg-pink-700'} />
               </td>
             </tr>
           ))}
