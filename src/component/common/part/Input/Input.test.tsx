@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react';
+import { useForm, FormProvider } from 'react-hook-form';
 import { propObj } from './Input.props';
 import { Input, InputProps, baseId } from './';
 
@@ -9,8 +10,16 @@ describe('default', () => {
     props = propObj.default;
   });
 
-  it('default の props に対するテストケースを書くこと', () => {
-    render(<Input {...props} />);
+  it('名前フォームがあること', () => {
+    const TestInput = () => {
+      const methods = useForm();
+      return (
+        <FormProvider {...methods}>
+          <Input {...props} />
+        </FormProvider>
+      );
+    };
+    render(<TestInput />);
     expect(screen.getByTestId(baseId)).toBeInTheDocument();
   });
 });

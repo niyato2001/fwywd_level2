@@ -9,6 +9,7 @@ export const Input: React.FC<InputProps> = ({ label }) => {
   const { register } = useFormContext();
   return (
     <input
+      data-testid={baseId}
       type='text'
       placeholder={label}
       className='mt-5 block border-primary-700 text-primary-700 focus:border-primary-500 focus:ring-white'
