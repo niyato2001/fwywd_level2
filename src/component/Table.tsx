@@ -1,13 +1,8 @@
 import { useLayoutEffect } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
+import { ToDoProps } from './common/part/Button';
 import { Input } from './common/part/Input';
 import { useToDos } from '@/hook/useToDos';
-
-export interface ToDoProps {
-  isCompleted: boolean;
-  name: string;
-  description: string;
-}
 
 export interface IFormValues {
   name: string;
