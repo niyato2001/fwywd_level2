@@ -1,12 +1,8 @@
 import { useLayoutEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, FormProvider } from 'react-hook-form';
+import { ToDoProps, Button } from './common/part/Button';
+import { Input } from './common/part/Input';
 import { useToDos } from '@/hook/useToDos';
-
-export interface ToDoProps {
-  isCompleted: boolean;
-  name: string;
-  description: string;
-}
 
 export interface IFormValues {
   name: string;
@@ -14,15 +10,15 @@ export interface IFormValues {
 }
 
 export const Table: React.FC = () => {
-  const { register, handleSubmit, setValue, reset } = useForm();
+  const methods = useForm();
   //   {
   //   defaultValues: { name: '', description: '' },
   // }
-  const toDoSubmit = handleSubmit((data) => {
+  const toDoSubmit = methods.handleSubmit((data) => {
     !isEdited
       ? newClick(JSON.parse(JSON.stringify(data)))
       : updateClick(JSON.parse(JSON.stringify(data)));
-    reset();
+    methods.reset();
   });
 
   const {
@@ -73,38 +69,38 @@ export const Table: React.FC = () => {
               <td className='px-4 py-2'>{toDo.name}</td>
               <td className='px-4 py-2'>{toDo.description}</td>
               <td>
-                <button
+                <Button
                   onClick={() => {
-                    setValue('name', toDo.name);
-                    setValue('description', toDo.description);
+                    methods.setValue('name', toDo.name);
+                    methods.setValue('description', toDo.description);
                     editedClick(toDo, i);
                   }}
-                  className='bg-primary-700 px-3 py-2 text-white'
-                >
-                  編集
-                </button>
+                  name='編集'
+                  color={'bg-primary-700'}
+                />
               </td>
               <td>
-                <button onClick={() => deleteClick(i)} className='bg-pink-700 px-3 py-2 text-white'>
-                  削除
-                </button>
+                <Button onClick={() => deleteClick(i)} name='削除' color={'bg-pink-700'} />
               </td>
             </tr>
           ))}
         </tbody>
       </table>
-      <form onSubmit={toDoSubmit}>
-        {isEdited ? (
-          <button type='submit' className='mt-5 bg-primary-700 px-3 py-2 text-white'>
-            更新
-          </button>
-        ) : (
-          <button type='submit' className='mt-5 bg-primary-700 px-3 py-2 text-white'>
-            新規追加
-          </button>
-        )}
+      <FormProvider {...methods}>
+        <form onSubmit={toDoSubmit}>
+          {isEdited ? (
+            <button type='submit' className='mt-5 bg-primary-700 px-3 py-2 text-white'>
+              更新
+            </button>
+          ) : (
+            <button type='submit' className='mt-5 bg-primary-700 px-3 py-2 text-white'>
+              新規追加
+            </button>
+          )}
+          <Input label='name' />
+          <Input label='description' />
 
-        <input
+          {/* <input
           type='text'
           placeholder='name'
           className='mt-5 block border-primary-700 text-primary-700 focus:border-primary-500 focus:ring-white'
@@ -113,18 +109,19 @@ export const Table: React.FC = () => {
             // onChange: (e) => handleInput('name', e.target.value),
           })}
           // value={formState.name}
-        />
-        <input
-          type='text'
-          placeholder='description'
-          className='mt-5 block border-primary-700 text-primary-700 focus:border-primary-500 focus:ring-white'
-          {...register('description', {
-            required: true,
-            // onChange: (e) => handleInput('description', e.target.value),
-          })}
-          // value={formState.description}
-        />
-      </form>
+        /> */}
+          {/* <input
+            type='text'
+            placeholder='description'
+            className='mt-5 block border-primary-700 text-primary-700 focus:border-primary-500 focus:ring-white'
+            {...methods.register('description', {
+              required: true, */}
+          {/* // onChange: (e) => handleInput('description', e.target.value),
+            })}
+            // value={formState.description}
+          /> */}
+        </form>
+      </FormProvider>
     </div>
   );
 };
