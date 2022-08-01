@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { ToDoProps, IFormValues } from '@/component/Table';
+import { IFormValues } from '@/component/Table';
+import { ToDoProps } from '@/component/common/part/Button';
 
 export const useToDos = () => {
   // const [nameForm, setNameForm] = useState<string>('');
